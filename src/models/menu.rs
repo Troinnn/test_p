@@ -57,14 +57,26 @@ impl Menu {
         }
     }
 
+<<<<<<< HEAD
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
+=======
+    pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics, (w, h): (f64, f64)) {
+>>>>>>> second commit
         use graphics::*;
 
         const WHITE: [f32; 4] = [1., 1., 1., 1.];
         let mut glyph_cache = GlyphCache::new(&self.font, (), TextureSettings::new()).unwrap();
         gl.draw(args.viewport(), |c, gl| {
             for (i, item) in self.items.iter().enumerate() {
+<<<<<<< HEAD
                 let transform = c.transform.trans(50., self.font_size * i as f64 + self.font_size / 0.5);
+=======
+                let transform = c.transform.trans(
+                    w / 2. - self.font_size * 2.,
+                    h / 2. + self.font_size * i as f64
+                );
+                
+>>>>>>> second commit
                 let title;
                 if self.pos == i {
                     title = "-> ".to_string() + &item.title;

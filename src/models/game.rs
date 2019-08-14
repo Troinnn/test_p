@@ -21,7 +21,11 @@ pub struct Game {
 impl Game {
     pub fn new() -> Self {
         let opengl = OpenGL::V3_2;
+<<<<<<< HEAD
         let window: GlutinWindow = WindowSettings::new("test_p", [800, 800])
+=======
+        let window: GlutinWindow = WindowSettings::new("test_p", [600, 600])
+>>>>>>> second commit
             .graphics_api(opengl)
             .exit_on_esc(false)
             .build()
@@ -47,12 +51,22 @@ impl Game {
         let ref font = assets.join("FiraSans-Regular.ttf");
         let mut glyph_cache = GlyphCache::new(font, (), TextureSettings::new()).unwrap();
 
+<<<<<<< HEAD
         
+=======
+        let width = self.window.size().width;
+        let height = self.window.size().height;
+
+>>>>>>> second commit
         let font_size = 20.;
         let fps = self.fps.tick();
         self.gl.draw(args.viewport(), |c, gl| {
             clear(BLACK, gl);
+<<<<<<< HEAD
             let transform = c.transform.trans(2., 790.);
+=======
+            let transform = c.transform.trans(2., height - 10.);
+>>>>>>> second commit
             text::Text::new_color(WHITE, font_size as u32).draw(
                     ("FPS: ".to_string() + &fps.to_string()).as_str(),
                     &mut glyph_cache,
@@ -63,7 +77,11 @@ impl Game {
         });      
         match self.game_state {
             GameState::Menu => {
+<<<<<<< HEAD
                 self.menu.render(args, &mut self.gl);
+=======
+                self.menu.render(args, &mut self.gl, (width, height));
+>>>>>>> second commit
             },
             GameState::Play => {
             },
