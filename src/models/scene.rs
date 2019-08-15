@@ -25,7 +25,7 @@ impl Scene {
         self.player.render(args, gl, (w, h));
     }
 
-    pub fn key_event(&mut self, args: &Button) -> GameState {
+    pub fn key_event(&mut self, args: &Button, fps: usize) -> GameState {
         match args {
             Keyboard(k) => {
                 match k {

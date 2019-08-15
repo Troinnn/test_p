@@ -25,7 +25,7 @@ pub struct Game {
 impl Game {
     pub fn new() -> Self {
         let opengl = OpenGL::V3_2;
-        let window: GlutinWindow = WindowSettings::new("test_p", [800, 800])
+        let window: GlutinWindow = WindowSettings::new("test_p", [600, 600])
             .graphics_api(opengl)
             .exit_on_esc(false)
             .build()
@@ -100,13 +100,14 @@ impl Game {
     }
 
     pub fn key_event(&mut self, args: &Button) {
+        let fps = self.fps.tick();
         match self.game_state {
             GameState::Menu => {
                 let new_state = self.menu.key_event(args);
                 self.set_state(&new_state); 
             },
             GameState::Play => {
-                let new_state = self.scene.key_event(args);
+                let new_state = self.scene.key_event(args, fps);
                 self.set_state(&new_state);
             },
             GameState::Exit => {},
