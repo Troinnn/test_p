@@ -8,6 +8,9 @@ use piston::{Event, RenderArgs, RenderEvent, input::*};
 
 use crate::models::menu::*;
 use crate::models::game_state::*;
+use crate::models::scene::*;
+
+pub const G: f64 = 9.81;
 
 #[warn(dead_code)]
 pub struct Game {
@@ -16,16 +19,13 @@ pub struct Game {
     pub menu: Menu,
     pub fps: FPSCounter,
     pub game_state: GameState,
+    pub scene: Scene,
 }
 
 impl Game {
     pub fn new() -> Self {
         let opengl = OpenGL::V3_2;
-<<<<<<< HEAD
         let window: GlutinWindow = WindowSettings::new("test_p", [800, 800])
-=======
-        let window: GlutinWindow = WindowSettings::new("test_p", [600, 600])
->>>>>>> second commit
             .graphics_api(opengl)
             .exit_on_esc(false)
             .build()
@@ -37,6 +37,7 @@ impl Game {
             menu: Menu::new(),
             fps: FPSCounter::new(),
             game_state: GameState::Menu,
+            scene: Scene::new(),
         }
     }
 
@@ -51,22 +52,29 @@ impl Game {
         let ref font = assets.join("FiraSans-Regular.ttf");
         let mut glyph_cache = GlyphCache::new(font, (), TextureSettings::new()).unwrap();
 
-<<<<<<< HEAD
-        
-=======
         let width = self.window.size().width;
         let height = self.window.size().height;
 
->>>>>>> second commit
         let font_size = 20.;
         let fps = self.fps.tick();
         self.gl.draw(args.viewport(), |c, gl| {
             clear(BLACK, gl);
-<<<<<<< HEAD
-            let transform = c.transform.trans(2., 790.);
-=======
+        });      
+        match self.game_state {
+            GameState::Menu => {
+                self.menu.render(args, &mut self.gl, (width, height));
+            },
+            GameState::Play => {
+                self.scene.render(args, &mut self.gl, (width, height));
+            },
+            GameState::Exit => {
+
+            },
+            GameState::None => {},
+        }
+
+        self.gl.draw(args.viewport(), |c, gl| {
             let transform = c.transform.trans(2., height - 10.);
->>>>>>> second commit
             text::Text::new_color(WHITE, font_size as u32).draw(
                     ("FPS: ".to_string() + &fps.to_string()).as_str(),
                     &mut glyph_cache,
@@ -74,20 +82,19 @@ impl Game {
                     transform, 
                     gl
             ).unwrap();
-        });      
-        match self.game_state {
-            GameState::Menu => {
-<<<<<<< HEAD
-                self.menu.render(args, &mut self.gl);
-=======
-                self.menu.render(args, &mut self.gl, (width, height));
->>>>>>> second commit
-            },
-            GameState::Play => {
-            },
-            GameState::Exit => {
+        });
+    }
 
+    pub fn update(&mut self, args: &UpdateArgs) {
+        let fps = self.fps.tick();
+        let width = self.window.size().width;
+        let height = self.window.size().height;
+        match self.game_state {
+            GameState::Menu => {},
+            GameState::Play => {
+                self.scene.update(args, (width, height), fps);
             },
+            GameState::Exit => {},
             GameState::None => {},
         }
     }
@@ -95,18 +102,25 @@ impl Game {
     pub fn key_event(&mut self, args: &Button) {
         match self.game_state {
             GameState::Menu => {
-                match self.menu.key_event(args) {
-                    GameState::Play => {self.game_state = GameState::Play;},
-                    GameState::Menu => {self.game_state = GameState::Menu;},
-                    GameState::Exit => {self.game_state = GameState::Exit;},
-                    GameState::None => {},
-                }
+                let new_state = self.menu.key_event(args);
+                self.set_state(&new_state); 
             },
-            GameState::Play => {},
+            GameState::Play => {
+                let new_state = self.scene.key_event(args);
+                self.set_state(&new_state);
+            },
             GameState::Exit => {},
             GameState::None => {},
         }
-        
+    }
+
+    pub fn set_state(&mut self, new_state: &GameState) {
+        match new_state {
+            GameState::Play => {self.game_state = GameState::Play;},
+            GameState::Menu => {self.game_state = GameState::Menu;},
+            GameState::Exit => {self.game_state = GameState::Exit;},
+            GameState::None => {},
+        }
     }
 
     pub fn event(&mut self, event: Event) {
@@ -120,6 +134,10 @@ impl Game {
 
         if let Some(k) = event.press_args() {
             self.key_event(&k);
+        }
+
+        if let Some(u) = event.update_args() {
+            self.update(&u);
         }
     }
 }
