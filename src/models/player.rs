@@ -46,9 +46,7 @@ impl Player {
     }
 
     pub fn jump(&mut self) {
-        let h = self.pos.1 - self.size as f64 / 0.5;
-        self.pos.1 = h;
-        self.speed += G  * -3.;
-        println!("{:?} : {:?}", h, self.pos.1);
+        self.pos.1 -= self.size as f64 - 1.;
+        self.speed += G  * -0.1;
     }
 }
