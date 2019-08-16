@@ -30,10 +30,16 @@ impl Scene {
             Keyboard(k) => {
                 match k {
                     Key::Escape => {
-                         return GameState::Menu;
+                        return GameState::Menu;
                     },
                     Key::Space => {
-                         self.player.jump();
+                        self.player.jump();
+                    },
+                    Key::Left => {
+                        self.player.left();
+                    },
+                    Key::Right => {
+                        self.player.right();
                     },
                     _ => {},
                 }
