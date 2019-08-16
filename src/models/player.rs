@@ -37,9 +37,7 @@ impl Player {
 
     pub fn update(&mut self, args: &UpdateArgs, (w, h): (f64, f64), fps: usize) {
         if !self.jump_flag && !self.fall_flag {
-            println!("{:?} : {:?} : {:?}", G, self.speed, fps as f64);
             self.speed -= G * self.speed / fps as f64;
-            println!("{:?}", self.speed);
             self.pos.1 -= self.speed;
             if self.speed.round() == 0.0 {
                 self.fall_flag = true;
@@ -49,25 +47,23 @@ impl Player {
 
         if self.fall_flag {
             self.speed += G / fps as f64;
-            if self.speed >= h - self.pos.1 {
-                self.pos.1 = (h - self.size as f64) / 2.;
-            } else {
-                self.pos.1 += self.speed;
-            }            
-        }
-        
-        if self.pos.1 >= (h - self.size as f64) / 2. {
-            self.fall_flag = false;
+            self.pos.1 += self.speed;            
+        }      
+
+        if self.fall_flag && self.pos.1 > (h / 2.) - self.size as f64 / 2. {
             self.jump_flag = true;
+            self.fall_flag = false;
+            self.speed = 0.;
+            self.pos.1 = (h / 2.) - self.size as f64 / 2.;
         } else {
-            //self.fall_flag = true;
-            //self.jump_flag = false;
+            self.jump_flag = false;
         }
     }
 
     pub fn jump(&mut self) {
         if self.jump_flag && !self.fall_flag {
             self.jump_flag = false;
+            self.speed += G;
         }     
     }
 }
